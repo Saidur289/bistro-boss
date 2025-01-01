@@ -1,33 +1,50 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../AuthProvider/AuthProvider";
+import { FaShoppingCart } from "react-icons/fa";
+import useCart from "../../../hooks/useCart";
 
 const Navbar = () => {
-  const {user, handleSignOut } = useContext(AuthContext)
+  const { user, handleSignOut } = useContext(AuthContext);
+  // cart data from custom hook useCart
+  const [cart]  = useCart()
   const handleLogOut = () => {
     handleSignOut()
-    .then(() => {})
-    .catch((error) => {
-      console.log(error);
-    })
-  }
-    const links = <>
-       <li  className='uppercase'>
-                <NavLink to = '/'>Home</NavLink>
-              </li>
-              <li  className='uppercase'>
-                <NavLink to ='/menu'>Our Menu</NavLink>
-              </li>
-              <li  className='uppercase'>
-                <NavLink to ='/order/salad'>Our Shop</NavLink>
-              </li>
-              {
-                user? <button onClick={handleLogOut} className="">Log Out</button>:   <li  className='uppercase'>
-                <NavLink to ='/login'>Login</NavLink>
-              </li>
-              }
-            
-              </>
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const links = (
+    <>
+      <li className="uppercase">
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li className="uppercase">
+        <NavLink to="/menu">Our Menu</NavLink>
+      </li>
+      <li className="uppercase">
+        <NavLink to="/order/salad">Our Shop</NavLink>
+      </li>
+      <li className="uppercase">
+        <NavLink to="/dashboard/cart">
+          <button className="flex items-center gap-1">
+            <FaShoppingCart className="mr-2"></FaShoppingCart>
+            <div className="badge badge-secondary">+{cart.length}</div>
+          </button>
+        </NavLink>
+      </li>
+      {user ? (
+        <button onClick={handleLogOut} className="">
+          Log Out
+        </button>
+      ) : (
+        <li className="uppercase">
+          <NavLink to="/login">Login</NavLink>
+        </li>
+      )}
+    </>
+  );
   return (
     <>
       <div className="navbar max-w-screen-xl fixed z-10 bg-opacity-30  bg-black text-white">
@@ -53,15 +70,13 @@ const Navbar = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
-           {links}
+              {links}
             </ul>
           </div>
           <a className="btn btn-ghost text-xl">Bistro Boss</a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
-          {links}
-          </ul>
+          <ul className="menu menu-horizontal px-1">{links}</ul>
         </div>
         <div className="navbar-end">
           <a className="btn">Button</a>
