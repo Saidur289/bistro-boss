@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha'
 import { AuthContext } from '../../AuthProvider/AuthProvider';
 import Swal from 'sweetalert2';
+import SocialLogin from '../../components/SocialLogin/SocialLogin';
 const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -73,6 +74,7 @@ const Login = () => {
               </div>
             </form>
             <p className='p-3 text-xs text-center'>Do Not Have An Account? <Link to = '/signup' className='text-red-700 font-bold'>Sign Up</Link> </p>
+            <SocialLogin></SocialLogin>
           </div>
         </div>
       </div>

@@ -10,6 +10,12 @@ import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
 import Dashboard from "../Layout/Dashboard";
 import Cart from "../pages/Dashboard/Cart/Cart";
+import PrivateRoute from "./PrivateRoute";
+import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
+import AdminRoute from "./AdminRoute";
+import AddItems from "../pages/Dashboard/AddItems/AddItems";
+import ManageItems from "../pages/Dashboard/ManageItems/ManageItems";
+import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
  
   
  const router = createBrowserRouter([
@@ -42,11 +48,29 @@ import Cart from "../pages/Dashboard/Cart/Cart";
     },
     {
       path: 'dashboard',
-      element: <Dashboard></Dashboard>,
+      element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
       children: [
         {
           path: 'cart',
           element: <Cart></Cart>
+        },
+        // admin route
+        {
+          path: 'users',
+          element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
+        },
+        {
+          path: 'addItems',
+          element: <AdminRoute><AddItems></AddItems></AdminRoute>
+        },
+        {
+          path:'manageItems',
+          element: <AdminRoute><ManageItems></ManageItems></AdminRoute>,
+        },
+        {
+          path: 'updateItem/:id',
+          element: <AdminRoute><UpdateItem></UpdateItem></AdminRoute>,
+          loader: ({params}) => fetch(`http://localhost:5000/menu/${params.id}`)
         }
       ]
     }

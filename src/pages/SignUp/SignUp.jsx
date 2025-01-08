@@ -4,8 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SocialLogin from "../../components/SocialLogin/SocialLogin";
 
 const SignUp = () => {
+  const axiosPublic = useAxiosPublic()
   const { handleSignUp, updateUser } = useContext(AuthContext);
   const navigate = useNavigate()
   const {
@@ -16,16 +19,30 @@ const SignUp = () => {
   } = useForm();
   const onSubmit = (data) => {
     // console.log(data)
-    handleSignUp(data.email, data.password).then((result) => {
-      console.log(result.user);
-      reset()
+    handleSignUp(data.email, data.password).then((result) => {    
+      // create object for update profile 
       const updatedData = {
         displayName: data.name,
         photoURL: data.photo
       }
+      // update user function
       updateUser(updatedData)
-      Swal.fire('user sign up successfully')
-      navigate('/')
+      .then(() => {
+        // create user than save to database
+        const userInfo = {
+          name: data?.name,
+          email: data?.email
+        }
+        axiosPublic.post('/users', userInfo)
+        .then(res => {
+          if(res.data.insertedId){
+            reset()
+            Swal.fire('user sign up successfully')
+            navigate('/')
+          }
+        })
+      })
+     
     });
   };
   return (
@@ -129,6 +146,7 @@ const SignUp = () => {
                 Login
               </Link>{" "}
             </p>
+            <SocialLogin></SocialLogin>
           </div>
         </div>
       </div>
