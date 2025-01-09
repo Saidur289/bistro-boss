@@ -3,11 +3,13 @@ import useCart from "../../../hooks/useCart";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import Loading from "../../Shared/Loading/Loading";
 
 const Cart = () => {
-  const [cart, refetch] = useCart();
+  const [cart, refetch, isLoading] = useCart();
   const total = cart.reduce((pre, curr) => pre + curr.price, 0);
   const axiosSecure = useAxiosSecure()
+  if(isLoading) return <Loading></Loading>
   const handleDeleteCart = id => {
     Swal.fire({
         title: "Are you sure?",

@@ -15,7 +15,7 @@ const useAxiosSecure = () => {
       return res 
     }, async error => {
       console.log('Error caught from insterceptors');
-      if(error.response.status === 401 || error.response.status === 403){
+      if(error.res?.status === 401 || error.response?.status === 403){
         // logout
         handleSignOut()
         navigate('/login')
