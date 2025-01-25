@@ -30,15 +30,15 @@ const unSubscribe = onAuthStateChanged(auth, async currentUser => {
                 setUser(currentUser)
                 // get jwt token
              await   axiosPublic.post('/jwt', {email: currentUser?.email}, {withCredentials: true})
-
+             setLoading(false)
 
             }
             else{
                 setUser(currentUser)
                 await axiosPublic.get('/logout', {withCredentials: true} )
-                
+                setLoading(false)
             }
-            setLoading(false)
+           
         })
         return () => {
             unSubscribe()

@@ -10,11 +10,14 @@ import { useAuth } from "../../../hooks/useAuth";
 import Loading from "../../Shared/Loading/Loading";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
+
 
 
 const CheckOutFrom = () => {
     // user for send confirmation data
     const {user} = useAuth()
+    const axiosPublic = useAxiosPublic()
     // navigate hook for after order confirmed user redirect to payment history page 
     const navigate = useNavigate()
   const stripe = useStripe();
@@ -96,8 +99,27 @@ const CheckOutFrom = () => {
         navigate('/dashboard/paymentHistory')
     }
   };
+  const handleCreatePaymentWithSSL = async() => {
+    const payment = {
+      email: user?.email,
+      price: totalPrice,
+      transactionId: '',
+      //moment js use korte hobe
+      date: new Date(),
+      cartIds: cart.map(item => item._id),
+      menuId: cart.map(item => item.menuId),
+      status: 'pending'
+
+  }
+  const response = await axiosPublic.post(`/create-ssl-payment`, payment)
+  console.log('response', response);
+  if(response?.data?.gateWayUrl){
+    window.location.replace(response?.data?.gateWayUrl)
+  }
+  }
   return (
-    <div>
+   <>
+    <div className="mb-5">
       <form onSubmit={handleSubmit}>
       <CardElement
         options={{
@@ -116,7 +138,7 @@ const CheckOutFrom = () => {
         }}
       />
       <button  className="btn btn-sm btn-primary" type="submit" disabled={!stripe || !clientSecret}>
-        Pay
+        Pay With Stripe
       </button>
     </form>
     <p className="text-red-500">{errorMessage}</p>
@@ -124,6 +146,8 @@ const CheckOutFrom = () => {
         transactionId && <p className="text-green-500"> TransactionId: {transactionId}</p>
     }
     </div>
+    <button onClick={handleCreatePaymentWithSSL} className="btn btn-primary">Payment With Islcommerce</button>
+    </>
   );
 };
 

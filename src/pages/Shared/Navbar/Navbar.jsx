@@ -3,11 +3,15 @@ import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../AuthProvider/AuthProvider";
 import { FaShoppingCart } from "react-icons/fa";
 import useCart from "../../../hooks/useCart";
+import useAdmin from "../../../hooks/useAdmin";
+import Loading from "../Loading/Loading";
 
 const Navbar = () => {
   const { user, handleSignOut } = useContext(AuthContext);
+  const [isAdmin,isAdminLoading] =  useAdmin()
   // cart data from custom hook useCart
   const [cart]  = useCart()
+  // if(isAdminLoading) return <Loading></Loading>
   const handleLogOut = () => {
     handleSignOut()
       .then(() => {})
@@ -26,6 +30,16 @@ const Navbar = () => {
       <li className="uppercase">
         <NavLink to="/order/salad">Our Shop</NavLink>
       </li>
+      {
+        user && isAdmin &&  <li className="uppercase">
+        <NavLink to="/dashboard/adminHome">DashBoard</NavLink>
+      </li>
+      }
+      {
+        user && !isAdmin &&  <li className="uppercase">
+        <NavLink to="/dashboard/userHome">DashBoard</NavLink>
+      </li>
+      }
       <li className="uppercase">
         <NavLink to="/dashboard/cart">
           <button className="flex items-center gap-1">
